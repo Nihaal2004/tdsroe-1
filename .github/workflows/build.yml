@@ -1,0 +1,36 @@
+     name: Multi-Platform Matrix Build
+
+     on:
+       push:
+         branches: [ main, master ]
+       workflow_dispatch:
+
+     jobs:
+       build:
+         runs-on: ubuntu-latest
+         strategy:
+           matrix:
+             version: [14, 16, 18]
+
+         steps:
+           - name: Checkout code
+             uses: actions/checkout@v4
+
+           - name: matrix-ce9ad03
+             run: |
+               echo "Building for version ${{ matrix.version }}"
+               echo "Matrix variant: ${{ matrix.version }}"
+
+           - name: Generate build artifact
+             run: |
+               mkdir -p build
+               echo "Build output for version ${{ matrix.version }}" > build/output.txt
+               echo "Timestamp: $(date)" >> build/output.txt
+               echo "Matrix variant: ${{ matrix.version }}" >> build/output.txt
+               echo "Unique build ID: ce9ad03-${{ matrix.version }}" >> build/output.txt
+
+           - name: Upload artifact
+             uses: actions/upload-artifact@v4
+             with:
+               name: build-ce9ad03-v${{ matrix.version }}
+               path: build/output.txt
